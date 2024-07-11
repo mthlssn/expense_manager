@@ -1,0 +1,51 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    display: flex;
+}
+
+.part1, .part2 {
+    height: 100vh;
+    padding: 5%;
+}
+
+/* ============================ */
+
+.part1 {
+    background-color: blue;
+    width: 40vw;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.radioForm {
+    display: flex;
+}
+
+/* ============================ */
+
+.part2 {
+    background-color: red;
+    width: 60vw;
+
+    display: flex;
+    justify-items: center;
+    gap: 10px;
+}
+
+.valores {
+    width: 100%;
+    background-color: white;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}

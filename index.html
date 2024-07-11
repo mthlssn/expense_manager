@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title> expense manager </title>
+</head>
+<body>
+    <div class="part1">
+        <div class="form"> 
+
+            <div class="radioForm">
+                <div class="radio">
+                    <input type="radio"  name="tipo_casdastro" value="0">
+                    <label for="html"> consumo </label>
+                </div>
+                
+                <div class="radio">
+                    <input type="radio" name="tipo_casdastro" value="1">
+                    <label for="css">desconsumo</label>
+                </div>
+            </div>
+            
+            <input type="text" placeholder="Titulo">
+
+            <input type="number" placeholder="Valor">
+
+            <input type="date"> 
+
+            <input type="text" placeholder="Categoria">
+
+            <div class="checkbox"> 
+                <input type="checkbox" id="scales" name="scales">
+                <label for="scales"> Apenas registrar </label>
+            </div>
+
+            <button onclick="criar()"> Salvar </button>
+        </div>
+    </div>
+
+    <div class="part2"> 
+        <div class="valores"> 
+            consumo
+        </div>
+
+        <div class="valores"> 
+            desconsumo
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    
+</body>
+</html>

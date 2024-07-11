@@ -1,0 +1,14 @@
+{
+  "name": "expense_manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "electron ."
+  },
+  "author": "mthlssn",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^31.2.0"
+  }
+}
