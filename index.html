@@ -12,26 +12,26 @@
 
             <div class="radioForm">
                 <div class="radio">
-                    <input type="radio"  name="tipo_casdastro" value="0">
+                    <input type="radio" name="tipo_casdastro" id="form_consumo" value="0" checked>
                     <label for="html"> consumo </label>
                 </div>
                 
                 <div class="radio">
-                    <input type="radio" name="tipo_casdastro" value="1">
+                    <input type="radio" name="tipo_casdastro" id="form_desconsumo" value="1">
                     <label for="css">desconsumo</label>
                 </div>
             </div>
             
-            <input type="text" placeholder="Titulo">
+            <input type="text" id="form_titulo" placeholder="Titulo">
 
-            <input type="number" placeholder="Valor">
+            <input type="number" id="form_valor"  placeholder="Valor">
 
-            <input type="date"> 
+            <input type="date" id="form_data">
 
-            <input type="text" placeholder="Categoria">
+            <input type="text" id="form_categoria" placeholder="Categoria">
 
             <div class="checkbox"> 
-                <input type="checkbox" id="scales" name="scales">
+                <input type="checkbox" id="form_registar" name="registar">
                 <label for="scales"> Apenas registrar </label>
             </div>
 
@@ -50,6 +50,6 @@
     </div>
 
     <script src="js/script.js"></script>
-    
+
 </body>
 </html>
