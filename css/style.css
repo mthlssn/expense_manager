@@ -5,18 +5,24 @@
 
 body {
     display: flex;
+    background-color: black;
 }
 
-.part1, .part2 {
+.part2 { /*TIRARRRRR */
     height: 100vh;
-    padding: 5%;
 }
 
 /* ============================ */
 
 .part1 {
-    background-color: blue;
     width: 40vw;
+
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+
+    padding-top: 5%;
+    padding-bottom: 5%;
 }
 
 .form {
@@ -24,26 +30,98 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    background-color: rgb(0, 0, 255);
 }
 
 .radioForm {
     display: flex;
 }
 
-/* ============================ */
-
-.part2 {
-    background-color: red;
-    width: 60vw;
+.cadastros {
+    width: 100%;
 
     display: flex;
-    justify-items: center;
+    flex-direction: column;
+    align-items: center;
     gap: 10px;
 }
 
-.valores {
-    width: 100%;
+.cadastro {
     background-color: white;
+
+    width: 70%;
+    height: 30px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.cadastro-visivel {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cadastro-titulo, .cadastro-valor {
+    color: black;
+    font-size: 13px;
+
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.cadastro-escondido {
+    background-color: green;
+    height: 100%;
+    width: 100%;
+
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.cadastro-data {
+    width: 70%;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+}
+
+.data-cadastro-data {
+    font-size: 10px;
+
+    margin-left: 5px;
+}
+
+/* ============================ */
+
+.part2 {
+    width: 60vw;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+
+.div-valores {
+    width: 90%;
+    height: 90%;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.valores {
+    width: 47.5%;
+    background-color: red;
 }
 
 ::-webkit-scrollbar {
