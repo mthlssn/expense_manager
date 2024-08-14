@@ -8,63 +8,107 @@
 </head>
 <body>
     <div class="part1">
-        <div class="form"> 
+        <div class="div-opcoes-form-cadastro"> 
+            <div class="opcoes">
+                
+            </div>
+            <div class="form"> 
 
-            <div class="radioForm">
-                <div class="radio">
-                    <input type="radio" name="tipo_casdastro" id="form_consumo" value="0" checked>
-                    <label for="html"> consumo </label>
+                <div class="radioForm">
+                    <div class="radio">
+                        <input type="radio" name="tipo_casdastro" id="form_consumo" value="0" checked>
+                        <label for="form_consumo"> consumo </label>
+                    </div>
+                    
+                    <div class="radio">
+                        <input type="radio" name="tipo_casdastro" id="form_desconsumo" value="1">
+                        <label for="form_desconsumo">desconsumo</label>
+                    </div>
                 </div>
                 
-                <div class="radio">
-                    <input type="radio" name="tipo_casdastro" id="form_desconsumo" value="1">
-                    <label for="css">desconsumo</label>
+                <input type="text" id="form_titulo" placeholder="Titulo">
+
+                <input type="number" id="form_valor"  placeholder="Valor">
+
+                <input type="date" id="form_data">
+
+                <input type="text" id="form_categoria" placeholder="Categoria">
+
+                <div class="checkbox_registar"> 
+                    <input type="checkbox" id="form_registar" name="registar">
+                    <label for="form_registar"> Apenas registrar </label>
                 </div>
-            </div>
-            
-            <input type="text" id="form_titulo" placeholder="Titulo">
 
-            <input type="number" id="form_valor"  placeholder="Valor">
-
-            <input type="date" id="form_data">
-
-            <input type="text" id="form_categoria" placeholder="Categoria">
-
-            <div class="checkbox"> 
-                <input type="checkbox" id="form_registar" name="registar">
-                <label for="scales"> Apenas registrar </label>
+                <button onclick="criar()"> Salvar </button>
             </div>
 
-            <button onclick="criar()"> Salvar </button>
-        </div>
-
-        <div class="cadastros" id="div_cadastros">
-            <!-- <div class="cadastro" id="expandir5" onclick="expandir(5)"> 
-                <div class="cadastro-visivel">
-                    <p class="cadastro-titulo"> Casa - Torneira </p>
-                    <p class="cadastro-valor"> R$ 55 </p>
+            <div class="cadastros" id="div_cadastros">
+                <div class="cadastro-data"> 
+                    <p class="data-cadastro-data"> 20/46 </p>
                 </div>
-                <div class="cadastro-escondido" id="esconder5"> 
-                    <p onclick="editar(5)"> Editar </p>
-                    <p onclick="apagar(5)"> Apagar </p>
-                </div>
-            </div> -->
+                <!-- <div class="cadastro" id="expandir5" onclick="expandir(5)"> 
+                    <div class="cadastro-visivel">
+                        <p class="cadastro-titulo"> Casa - Torneira </p>
+                        <p class="cadastro-valor"> R$ 55 </p>
+                    </div>
+                    <div class="cadastro-escondido" id="esconder5"> 
+                        <p onclick="editar(5)"> Editar </p>
+                        <p onclick="apagar(5)"> Apagar </p>
+                    </div>
+                </div> -->
+            </div>
         </div>
     </div>
 
     <div class="part2">
-        <div class="div-valores">
+        <div class="div-valores-dados">
             <div class="valores"> 
-                consumo
+                <div class="valores-data">
+                    <select name="meses" id="form_meses">
+                        <option value="1">JAN2</option>
+                        <option value="2">FEV</option>
+                        <option value="3">MAR</option>
+                        <option value="4">ABR</option>
+                        <option value="5">MAI</option>
+                        <option value="6">JUN</option>
+                        <option value="7">JUL</option>
+                        <option value="8">AGO</option>
+                        <option value="9">SET</option>
+                        <option value="10">OUT</option>
+                        <option value="11">NOV</option>
+                        <option value="12">DEZ</option>
+                    </select>
+                    <input type="number" id="form_anos" min="1950" max="2100" step="1" value="2024" />
+                    
+                    <div class="checkbox_ano_todo"> 
+                        <input type="checkbox" id="form_ano_todo" name="ano_todo">
+                        <label for="form_ano_todo"> Ano todo </label>
+                    </div>
+
+                    <button onclick="atualizar()"> Atualizar </button>
+                </div>
+                <div class="valores-desconsumo">
+                    <p> 150,00 </p>
+                </div>
+                <div class="valores-consumo">
+                    <p> 100,00 </p>
+                </div>
+                <div class="valores-restante">
+                    <p> 50,00 </p>
+                </div>
             </div>
 
-            <div class="valores"> 
+            <div class="dados"> 
                 desconsumo
             </div>
         </div> 
     </div>
 
-    <script src="js/script.js"></script>
+    <!-- <script src="js/script.js" type="module"></script> -->
+
+    <script>
+        require('./teste.js')
+    </script>
 
 </body>
 </html>
