@@ -1,5 +1,3 @@
-const fs = require("fs");
-
 const form_consumo = document.getElementById("form_consumo");
 const form_desconsumo = document.getElementById("form_desconsumo");
 const form_titulo = document.getElementById("form_titulo");
@@ -20,17 +18,48 @@ var editando = [false, -1];
 
 var expandido = [false, -1];
 
-file_manager.ler_arquivo();
 
 
 
-console.log(fs.existsSync("./data"));
 
-// if (fs.existsSync("./data")) {
-//   let content = fs.readFileSync("./data/items.json");
-//   console.log("ENTROUU");
+
+
+// const URL = "http://localhost:3456/";
+
+// async function chamarAPI() {
+//   const rest = await fetch(URL);
+
+//   if (rest.status === 200) {
+//     const obj = await rest.json();
+//     console.log(obj);
+    
+//   }
+
+//   console.log(rest);
   
 // }
+
+// chamarAPI();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -56,8 +85,6 @@ cadastros = [
   [false, "Teste 02", 25, "2024-07-03", "Video", true],
   [false, "Teste 02", 25, "2024-07-03", "Video", true],
 ];
-
-console.log(cadastros[3][3][8] + cadastros[3][3][9]);
 
 mostrar();
 
