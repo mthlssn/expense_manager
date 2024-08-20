@@ -16,10 +16,10 @@ app.on("ready", () => {
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 });
 
-server.listen(express.get("Port"), express.get("Host"));
-
+server.listen(express.get("Port"), express.get("Host"), () => {
+  console.log("servidor rodando");
+});
 
 // transfor váriáveis em Json e o contrário
-// acabar o crud do api: https://www.youtube.com/watch?v=M7uMuGIlA98
 // arrumar sistema de geração de arquivos api
 // esturar fetch: https://www.youtube.com/watch?v=qIGYM4S8x50
