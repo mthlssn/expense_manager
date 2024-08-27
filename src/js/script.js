@@ -12,97 +12,30 @@ const form_meses = document.getElementById("form_meses");
 const form_anos = document.getElementById("form_anos");
 
 var cadastros = [];
-var cadastro = [];
 
 var editando = [false, -1];
 
 var expandido = [false, -1];
 
-
-
-
-
-
-
-// const URL = "http://localhost:3456/";
-
-// async function chamarAPI() {
-//   const rest = await fetch(URL);
-
-//   if (rest.status === 200) {
-//     const obj = await rest.json();
-//     console.log(obj);
-    
-//   }
-
-//   console.log(rest);
-  
-// }
-
-// chamarAPI();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-cadastros = [
-  [true, "Teste 01", 456, "2024-07-03", "Musica", false],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-  [false, "Teste 02", 25, "2024-07-03", "Video", true],
-];
-
 mostrar();
 
-function criar() {
-  cadastro.push(form_consumo.checked);
-  cadastro.push(form_titulo.value);
-  cadastro.push(form_valor.value);
-  cadastro.push(form_data.value);
-  cadastro.push(form_categoria.value);
-  cadastro.push(form_registar.checked);
+async function criar() {
+  const newObj = {
+    consumo: form_consumo.checked,
+    desconsumo: form_desconsumo.checked,
+    titulo: form_titulo.value,
+    valor: form_valor.value,
+    data: form_data.value,
+    categoria: form_categoria.value,
+    registar: form_registar.checked,
+  };
 
   if (editando[0]) {
-    cadastros[editando[1]] = cadastro;
+    await customFetch("/" + editando[1], "PUT", newObj);
+    editando = [false, -1];
   } else {
-    cadastros.push(cadastro);
+    await customFetch("", "POST", newObj);
   }
-
-  cadastro = [];
 
   form_consumo.checked = true;
   form_titulo.value = "";
@@ -112,15 +45,18 @@ function criar() {
   form_registar.checked = false;
 
   mostrar();
+  console.log("criado com sucesso!");
 }
 
-function mostrar() {
+async function mostrar() {
   let list_cadastros = ``;
 
   let data_atual = "00";
 
+  cadastros = await customFetch("", "GET");
+
   cadastros.forEach((cadastro, index) => {
-    let data_cadastro = cadastro[3][8] + cadastro[3][9];
+    let data_cadastro = cadastro.data[8] + cadastro.data[9];
 
     if (data_cadastro != data_atual) {
       data_atual = data_cadastro;
@@ -129,7 +65,7 @@ function mostrar() {
         list_cadastros +
         `
             <div class="cadastro-data"> 
-                <p class="data-cadastro-data"> ${cadastro[3]} </p>
+                <p class="data-cadastro-data"> ${cadastro.data} </p>
             </div>
                 `;
     }
@@ -137,14 +73,14 @@ function mostrar() {
     list_cadastros =
       list_cadastros +
       `
-            <div class="cadastro" id="expandir${index}" onclick="expandir(${index})"> 
+            <div class="cadastro" id="expandir${cadastro.id}" onclick="expandir('${cadastro.id}')"> 
                 <div class="cadastro-visivel">
-                    <p class="cadastro-titulo"> ${cadastro[4]} - ${cadastro[1]} </p>
-                    <p class="cadastro-valor"> R$ ${cadastro[2]} </p>
+                    <p class="cadastro-titulo"> ${cadastro.categoria} - ${cadastro.titulo} </p>
+                    <p class="cadastro-valor"> R$ ${cadastro.valor} </p>
                 </div>
-                <div class="cadastro-escondido" id="esconder${index}"> 
-                    <p onclick="editar(${index})"> Editar </p>
-                    <p onclick="apagar(${index})"> Apagar </p>
+                <div class="cadastro-escondido" id="esconder${cadastro.id}"> 
+                    <p onclick="editar('${cadastro.id}')"> Editar </p>
+                    <p onclick="apagar('${cadastro.id}')"> Apagar </p>
                 </div>
             </div>
             `;
@@ -153,23 +89,28 @@ function mostrar() {
   div_cadastros.innerHTML = list_cadastros;
 }
 
-function editar(id) {
+async function editar(id) {
   editando = [true, id];
 
-  if (!cadastros[id][0]) {
+  const cadastroE = await customFetch("/" + id, "GET");
+
+  console.log(cadastroE);
+
+  if (!cadastroE.desconsumo) {
     form_desconsumo.checked = true;
   }
 
-  form_consumo.checked = cadastros[id][0];
-  form_titulo.value = cadastros[id][1];
-  form_valor.value = cadastros[id][2];
-  form_data.value = cadastros[id][3];
-  form_categoria.value = cadastros[id][4];
-  form_registar.checked = cadastros[id][5];
+  form_consumo.checked = cadastroE.consumo;
+  form_titulo.value = cadastroE.titulo;
+  form_valor.value = cadastroE.valor;
+  form_data.value = cadastroE.data;
+  form_categoria.value = cadastroE.categoria;
+  form_registar.checked = cadastroE.registar;
 }
 
-function apagar(id) {
-  cadastros.splice(id, 1);
+async function apagar(id) {
+  await customFetch("/" + id, "DELETE");
+  console.log("deletado com sucesso!");
 
   expandido[0] = false;
 
@@ -201,4 +142,61 @@ function expandir(id) {
 
 function atualizar() {
   pass;
+}
+
+async function customFetch(url, type, data) {
+  url = "http://localhost:3456" + url;
+
+  if (type === "GET") {
+    try {
+      const res = await fetch(url, {
+        method: type,
+        headers: { "Content-type": "application/json" },
+      });
+
+      if (res.ok) {
+        console.log("HTTP request succesful");
+      } else {
+        throw new Error("HTTP request unsuccesful");
+      }
+
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  if (type === "POST" || type === "PUT") {
+    fetch(url, {
+      method: type,
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (res.ok) {
+          console.log("HTTP request succesful");
+          return res.json();
+        } else {
+          console.log("HTTP request unsucessful");
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+
+  if (type === "DELETE") {
+    fetch(url, {
+      method: type,
+      headers: { "Content-type": "application/json" },
+    })
+      .then((res) => {
+        if (res.ok) {
+          console.log("HTTP request succesful");
+          return res.json();
+        } else {
+          console.log("HTTP request unsucessful");
+        }
+      })
+      .catch((error) => console.log(error));
+  }
 }

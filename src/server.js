@@ -30,38 +30,37 @@ router.get("/", (req, res) => {
   res.send(content);
 });
 
+router.get("/:id", (req, res) => {
+  const {id} = req.params;
+  const currentContent = readFile();
+
+  const selectedItem = currentContent.find((item) => item.id === id);
+  res.send(selectedItem)
+});
+
 router.post("/", (req, res) => {
-  const {name, email, phone} = req.body;
+  const {consumo, desconsumo, titulo, valor, data, categoria, registar} = req.body;
 
   const currentContent = readFile();
   const id = Math.random().toString(32).substring(2, 9);
 
-  currentContent.push({id, name, email, phone});
+  currentContent.push({id, consumo, desconsumo, titulo, valor, data, categoria, registar});
   writeFile(currentContent);
 
-  res.send({id, name, email, phone});
+  res.send({id, consumo, desconsumo, titulo, valor, data, categoria, registar});
 });
 
 router.put("/:id", (req, res) => {
   const {id} = req.params;
-  const {name, email, phone} = req.body;
+  const {consumo, desconsumo, titulo, valor, data, categoria, registar} = req.body;
   
   const currentContent = readFile();
   const selectedItem = currentContent.findIndex((item) => item.id === id);
 
-  const {id: cId, name: cName, email: cEmail, phone: cPhone } = currentContent[selectedItem];
-  const newObject = {
-    id: cId,
-    name: name ? name: cName,
-    email: email ? email: cEmail,
-    phone: phone ? phone: cPhone,
-  }
-
-
-  currentContent[selectedItem] = newObject;
+  currentContent[selectedItem] = {id, consumo, desconsumo, titulo, valor, data, categoria, registar};
   writeFile(currentContent);
 
-  res.send(newObject);
+  res.send({id, consumo, desconsumo, titulo, valor, data, categoria, registar});
 });
 
 router.delete("/:id", (req, res) => {
@@ -80,6 +79,6 @@ app.use(router);
 
 module.exports = { app, server };
 
-server.listen(port, host, () => {
-  console.log("servidor rodando só no servidor");
-});
+// server.listen(port, host, () => {
+//   console.log("servidor rodando só no servidor");
+// });
