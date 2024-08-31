@@ -10,6 +10,7 @@ const div_cadastros = document.getElementById("div_cadastros");
 
 const form_meses = document.getElementById("form_meses");
 const form_anos = document.getElementById("form_anos");
+const form_ano_todo = document.getElementById("form_ano_todo");
 
 var cadastros = [];
 
@@ -17,7 +18,17 @@ var editando = [false, -1];
 
 var expandido = [false, -1];
 
+var data = new Date();
+
+var mes = String(data.getMonth() + 1).padStart(2, '0');
+var ano = data.getFullYear();
+
+
+
+
 mostrar();
+setarData();
+
 
 async function criar() {
   const newObj = {
@@ -31,7 +42,7 @@ async function criar() {
   };
 
   if (editando[0]) {
-    await customFetch("/" + editando[1], "PUT", newObj);
+    await customFetch("/id/" + editando[1], "PUT", newObj);
     editando = [false, -1];
   } else {
     await customFetch("", "POST", newObj);
@@ -53,7 +64,7 @@ async function mostrar() {
 
   let data_atual = "00";
 
-  cadastros = await customFetch("", "GET");
+  cadastros = await customFetch("/data", "GET");
 
   cadastros.forEach((cadastro, index) => {
     let data_cadastro = cadastro.data[8] + cadastro.data[9];
@@ -92,7 +103,7 @@ async function mostrar() {
 async function editar(id) {
   editando = [true, id];
 
-  const cadastroE = await customFetch("/" + id, "GET");
+  const cadastroE = await customFetch("/id/" + id, "GET");
 
   console.log(cadastroE);
 
@@ -109,7 +120,7 @@ async function editar(id) {
 }
 
 async function apagar(id) {
-  await customFetch("/" + id, "DELETE");
+  await customFetch("/id/" + id, "DELETE");
   console.log("deletado com sucesso!");
 
   expandido[0] = false;
@@ -141,7 +152,8 @@ function expandir(id) {
 }
 
 function atualizar() {
-  pass;
+  console.log(form_anos.value + " " + form_meses.value  + " " +  form_ano_todo.checked);
+  
 }
 
 async function customFetch(url, type, data) {
@@ -199,4 +211,12 @@ async function customFetch(url, type, data) {
       })
       .catch((error) => console.log(error));
   }
+}
+
+function setarData () {
+  let mes = String(data.getMonth() + 1).padStart(2, '0');
+  let ano = data.getFullYear();
+
+  form_meses.value = mes;
+  form_anos.value = ano;
 }
