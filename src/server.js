@@ -77,31 +77,30 @@ const writeFile = (content, data) => {
   fs.writeFileSync(file, updateFile, "utf-8");
 };
 
-router.get("/data/:data", (req, res) => {
+router.get("/:data", (req, res) => {
   const { data } = req.params;
 
   const content = readFile(data);
   res.send(content);
 });
 
-router.get("/id/:id", (req, res) => {
-  const { id } = req.params;
-  const currentContent = readFile();
-
-  console.log(req.params.id);
-
+router.get("/:data/:id", (req, res) => {
+  const { data, id } = req.params;
+  const currentContent = readFile("m" + data);
+  
   const selectedItem = currentContent.find((item) => item.id === id);
-  res.send(selectedItem);
+
+  if (selectedItem != -1) {
+    res.send(selectedItem);
+  }
 });
 
 router.post("/", async (req, res) => {
   const { consumo, desconsumo, titulo, valor, data, categoria, registar } =
     req.body;
 
-  const currentContent = await readFile(data.slice(0, -3));
+  const currentContent = await readFile("m" + data.slice(0, -3));
   const id = Math.random().toString(32).substring(2, 9);
-
-  console.log(currentContent);
 
   currentContent.push({
     id,
@@ -113,6 +112,7 @@ router.post("/", async (req, res) => {
     categoria,
     registar,
   });
+
   writeFile(currentContent, data.slice(0, -3));
 
   res.send({
@@ -127,54 +127,59 @@ router.post("/", async (req, res) => {
   });
 });
 
-router.put("/id/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   const { id } = req.params;
   const { consumo, desconsumo, titulo, valor, data, categoria, registar } =
     req.body;
 
-  const currentContent = readFile();
+  const currentContent = readFile("m" + data.slice(0, -3));
   const selectedItem = currentContent.findIndex((item) => item.id === id);
 
-  currentContent[selectedItem] = {
-    id,
-    consumo,
-    desconsumo,
-    titulo,
-    valor,
-    data,
-    categoria,
-    registar,
-  };
-  writeFile(currentContent);
+  if (selectedItem != -1) {
+    currentContent[selectedItem] = {
+      id,
+      consumo,
+      desconsumo,
+      titulo,
+      valor,
+      data,
+      categoria,
+      registar,
+    };
+    writeFile(currentContent, data.slice(0, -3));
 
-  res.send({
-    id,
-    consumo,
-    desconsumo,
-    titulo,
-    valor,
-    data,
-    categoria,
-    registar,
-  });
+    res.send({
+      id,
+      consumo,
+      desconsumo,
+      titulo,
+      valor,
+      data,
+      categoria,
+      registar,
+    });
+  }
 });
 
-router.delete("/id/:id", (req, res) => {
-  const { id } = req.params;
-  const currentContent = readFile();
+router.delete("/:data/:id", (req, res) => {
+  const { data, id } = req.params;
+  const currentContent = readFile("m" + data);
 
   const selectedItem = currentContent.findIndex((item) => item.id === id);
-  currentContent.splice(selectedItem, 1);
 
-  writeFile(currentContent);
-
-  res.send(true);
+  if (selectedItem != -1) {
+    currentContent.splice(selectedItem, 1);
+    writeFile(currentContent, data);
+    res.send(true);
+  } else {
+    res.send(false);
+  }
 });
 
 app.use(router);
 
 module.exports = { app, server };
 
-server.listen(port, host, () => {
-  console.log("servidor rodando só no servidor");
-});
+// server.listen(port, host, () => {
+//   console.log("servidor rodando só no servidor");
+// });

@@ -18,17 +18,8 @@ var editando = [false, -1];
 
 var expandido = [false, -1];
 
-var data = new Date();
-
-var mes = String(data.getMonth() + 1).padStart(2, '0');
-var ano = data.getFullYear();
-
-
-
-
 mostrar();
 setarData();
-
 
 async function criar() {
   const newObj = {
@@ -60,11 +51,12 @@ async function criar() {
 }
 
 async function mostrar() {
+  let data = getDataForm()
+
   let list_cadastros = ``;
+  let data_atual = "00"; 
 
-  let data_atual = "00";
-
-  cadastros = await customFetch("/data", "GET");
+  cadastros = await customFetch("/m" + data, "GET");
 
   cadastros.forEach((cadastro, index) => {
     let data_cadastro = cadastro.data[8] + cadastro.data[9];
@@ -101,11 +93,11 @@ async function mostrar() {
 }
 
 async function editar(id) {
+  let data = getDataForm();
+
   editando = [true, id];
 
-  const cadastroE = await customFetch("/id/" + id, "GET");
-
-  console.log(cadastroE);
+  const cadastroE = await customFetch("/" + data + "/" + id, "GET");
 
   if (!cadastroE.desconsumo) {
     form_desconsumo.checked = true;
@@ -120,7 +112,10 @@ async function editar(id) {
 }
 
 async function apagar(id) {
-  await customFetch("/id/" + id, "DELETE");
+  let data = getDataForm();
+
+  await customFetch("/" + data + "/" + id, "DELETE");
+
   console.log("deletado com sucesso!");
 
   expandido[0] = false;
@@ -152,8 +147,7 @@ function expandir(id) {
 }
 
 function atualizar() {
-  console.log(form_anos.value + " " + form_meses.value  + " " +  form_ano_todo.checked);
-  
+  mostrar();
 }
 
 async function customFetch(url, type, data) {
@@ -213,10 +207,16 @@ async function customFetch(url, type, data) {
   }
 }
 
-function setarData () {
-  let mes = String(data.getMonth() + 1).padStart(2, '0');
+function setarData() {
+  var data = new Date();
+
+  let mes = String(data.getMonth() + 1).padStart(2, "0");
   let ano = data.getFullYear();
 
   form_meses.value = mes;
   form_anos.value = ano;
+}
+
+function getDataForm() {
+  return form_anos.value + "-" + form_meses.value;
 }
