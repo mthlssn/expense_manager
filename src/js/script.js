@@ -12,14 +12,28 @@ const form_meses = document.getElementById("form_meses");
 const form_anos = document.getElementById("form_anos");
 const form_ano_todo = document.getElementById("form_ano_todo");
 
+const divVaDesconsumo = document.getElementById("valores-desconsumo");
+const divVaConsumo = document.getElementById("valores-consumo");
+const divVaRestante = document.getElementById("valores-restante");
+
+const dadosCategorias = document.getElementById("dados-categorias");
+
 var cadastros = [];
 
 var editando = [false, -1];
 
 var expandido = [false, -1];
 
-mostrar();
+var dataFormAtualizar;
+
+var valorDesconsumo = 0;
+var valorConsumo = 0;
+var valorRestante = 0;
+
+var dadosConsumo = true;
+
 setarData();
+mostrar();
 
 async function criar() {
   const newObj = {
@@ -33,7 +47,7 @@ async function criar() {
   };
 
   if (editando[0]) {
-    await customFetch("/id/" + editando[1], "PUT", newObj);
+    await customFetch("/" + editando[1], "PUT", newObj);
     editando = [false, -1];
   } else {
     await customFetch("", "POST", newObj);
@@ -51,12 +65,11 @@ async function criar() {
 }
 
 async function mostrar() {
-  let data = getDataForm()
-
   let list_cadastros = ``;
-  let data_atual = "00"; 
+  let data_atual = "00";
+  let dados = [];
 
-  cadastros = await customFetch("/m" + data, "GET");
+  cadastros = await customFetch("/m" + dataFormAtualizar, "GET");
 
   cadastros.forEach((cadastro, index) => {
     let data_cadastro = cadastro.data[8] + cadastro.data[9];
@@ -87,17 +100,71 @@ async function mostrar() {
                 </div>
             </div>
             `;
+
+    if (cadastro.consumo) {
+      valorConsumo = valorConsumo + parseInt(cadastro.valor);
+    } else {
+      valorDesconsumo = valorDesconsumo + parseInt(cadastro.valor);
+    }
+
+    valorRestante = valorDesconsumo - valorConsumo;
+
+
+    if (dadosConsumo) {
+      if (cadastro.consumo) {
+        let dadoCategoria = cadastro.categoria;
+        let existe = false;
+
+        for (let i = 0; i < dados.length; i++) {
+          if (dados[i][0] == dadoCategoria) {
+            existe = true;
+            dados[i][1] = parseInt(dados[i][1]) + parseInt(cadastro.valor);
+          }
+        }
+
+        if (!existe) {
+          dados.push([cadastro.categoria, cadastro.valor]);
+        }
+      }
+    } else {
+      if (cadastro.desconsumo) {
+        let dadoCategoria = cadastro.categoria;
+        let existe = false;
+
+        for (let i = 0; i < dados.length; i++) {
+          if (dados[i][0] == dadoCategoria) {
+            existe = true;
+            dados[i][1] = parseInt(dados[i][1]) + parseInt(cadastro.valor);
+          }
+        }
+
+        if (!existe) {
+          dados.push([cadastro.categoria, cadastro.valor]);
+        }
+      }
+    }
+
+    console.log(dados);
   });
 
   div_cadastros.innerHTML = list_cadastros;
+
+  divVaDesconsumo.innerHTML = `<p> ${valorDesconsumo} </p>`;
+  divVaConsumo.innerHTML = `<p> ${valorConsumo} </p>`;
+  divVaRestante.innerHTML = `<p> ${valorRestante} </p>`;
+
+  valorDesconsumo = 0;
+  valorConsumo = 0;
+  valorRestante = 0;
 }
 
 async function editar(id) {
-  let data = getDataForm();
-
   editando = [true, id];
 
-  const cadastroE = await customFetch("/" + data + "/" + id, "GET");
+  const cadastroE = await customFetch(
+    "/" + dataFormAtualizar + "/" + id,
+    "GET"
+  );
 
   if (!cadastroE.desconsumo) {
     form_desconsumo.checked = true;
@@ -112,9 +179,7 @@ async function editar(id) {
 }
 
 async function apagar(id) {
-  let data = getDataForm();
-
-  await customFetch("/" + data + "/" + id, "DELETE");
+  await customFetch("/" + dataFormAtualizar + "/" + id, "DELETE");
 
   console.log("deletado com sucesso!");
 
@@ -147,6 +212,8 @@ function expandir(id) {
 }
 
 function atualizar() {
+  dataFormAtualizar = form_anos.value + "-" + form_meses.value;
+
   mostrar();
 }
 
@@ -215,8 +282,16 @@ function setarData() {
 
   form_meses.value = mes;
   form_anos.value = ano;
+
+  dataFormAtualizar = form_anos.value + "-" + form_meses.value;
 }
 
-function getDataForm() {
-  return form_anos.value + "-" + form_meses.value;
+function atualizarDados(tipo) {
+  if (tipo == "consumo") {
+    dadosConsumo = true;
+  } else {
+    dadosConsumo = false;
+  }
+
+  mostrar()
 }

@@ -50,6 +50,7 @@ const readFile = (data) => {
     pass;
   } else if (data[0] == "m") {
     let file = path_app + data.slice(1) + ".json";
+
     if (fs.existsSync(file)) {
       content = JSON.parse(fs.readFileSync(file, "utf-8"));
     } else {
@@ -87,7 +88,7 @@ router.get("/:data", (req, res) => {
 router.get("/:data/:id", (req, res) => {
   const { data, id } = req.params;
   const currentContent = readFile("m" + data);
-  
+
   const selectedItem = currentContent.find((item) => item.id === id);
 
   if (selectedItem != -1) {
