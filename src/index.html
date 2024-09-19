@@ -105,7 +105,7 @@
                         Categorias
                     </div>
                     <div id="dados-categorias">
-                        <div class="categorias">
+                        <!-- <div class="categorias">
                             <p>
                                 Moto
                             </p>    
@@ -115,16 +115,16 @@
                             <p>
                                 R$ 450,00
                             </p>
-                        </div>
+                        </div> -->
                     </div>
                 </div>    
                 <div class="div-graficos">
                     <div class="dados-graficos"> 
                         <div class="grafico1">
-                            <canvas id="myChart2"></canvas>
+                            <canvas id="canvas-grafico1"></canvas>
                         </div>
                         <div class="grafico2">
-                            <canvas id="myChart"></canvas>
+                            <canvas id="canvas-grafico2"></canvas>
                         </div>
                     </div>
                 </div>
@@ -133,47 +133,5 @@
     </div>
 
     <script src="js/script.js"></script>
-      
-      <script>
-        const ctx = document.getElementById('myChart');
-        const ctx2 = document.getElementById('myChart2');
-
-        const labels = ['asds', 'asd'];
-        const data = {
-        labels: labels,
-        datasets: [{
-            label: ['gastos'],
-            data: [65, 59, 80, 81, 56, 55, 40],
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-        }]
-        };
-
-        const config = {
-            type: 'line',
-            data: data,
-        };
-
-        const data2 = {
-            datasets: [{
-                data: [300, 50, 100],
-                backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-                ],
-                hoverOffset: 4
-            }]
-        };
-
-        const config2 = {
-            type: 'pie',
-            data: data2,
-        };
-      
-        new Chart(ctx, config);
-        new Chart(ctx2, config2);
-      </script>
 </body>
 </html>

@@ -18,6 +18,11 @@ const divVaRestante = document.getElementById("valores-restante");
 
 const dadosCategorias = document.getElementById("dados-categorias");
 
+const canvasGrafico1 = document.getElementById("canvas-grafico1");
+const canvasGrafico2 = document.getElementById("canvas-grafico2");
+
+const diasMes = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
 var cadastros = [];
 
 var editando = [false, -1];
@@ -31,6 +36,9 @@ var valorConsumo = 0;
 var valorRestante = 0;
 
 var dadosConsumo = true;
+
+var grafico1;
+var grafico2;
 
 setarData();
 mostrar();
@@ -66,12 +74,23 @@ async function criar() {
 
 async function mostrar() {
   let list_cadastros = ``;
+  let list_dados = ``;
   let data_atual = "00";
   let dados = [];
+  let valoresDados = [];
+  let total = 0;
+  let dias = [];
+  let mes = dataFormAtualizar[5] + dataFormAtualizar[6];
+  let valorPorDia = [];
+
+  for (let i = 1; i < diasMes[parseInt(mes) - 1] + 1; i++) {
+    dias.push(i);
+    valorPorDia.push(0);
+  }
 
   cadastros = await customFetch("/m" + dataFormAtualizar, "GET");
 
-  cadastros.forEach((cadastro, index) => {
+  cadastros.forEach((cadastro) => {
     let data_cadastro = cadastro.data[8] + cadastro.data[9];
 
     if (data_cadastro != data_atual) {
@@ -109,7 +128,6 @@ async function mostrar() {
 
     valorRestante = valorDesconsumo - valorConsumo;
 
-
     if (dadosConsumo) {
       if (cadastro.consumo) {
         let dadoCategoria = cadastro.categoria;
@@ -125,6 +143,9 @@ async function mostrar() {
         if (!existe) {
           dados.push([cadastro.categoria, cadastro.valor]);
         }
+
+        valorPorDia[parseInt(data_cadastro) - 1] =
+          valorPorDia[parseInt(data_cadastro) - 1] + parseInt(cadastro.valor);
       }
     } else {
       if (cadastro.desconsumo) {
@@ -141,17 +162,117 @@ async function mostrar() {
         if (!existe) {
           dados.push([cadastro.categoria, cadastro.valor]);
         }
+
+        valorPorDia[parseInt(data_cadastro) - 1] =
+          valorPorDia[parseInt(data_cadastro) - 1] + parseInt(cadastro.valor);
       }
     }
+  });
 
-    console.log(dados);
+  console.log(valorPorDia);
+
+  let temp = dados.map((x) => x);
+  let novoDados = [];
+
+  for (let i = 0; i < dados.length; i++) {
+    let maior = parseInt(dados[i][1]);
+    let index = 0;
+    for (let j = 0; j < temp.length; j++) {
+      let teste = parseInt(temp[j][1]);
+      if (maior <= teste) {
+        maior = teste;
+        index = j;
+      }
+    }
+    novoDados.push(temp[index]);
+    temp.splice(index, 1);
+  }
+
+  dados = novoDados.map((x) => x);
+
+  for (let i = 0; i < dados.length; i++) {
+    valoresDados.push(parseInt(dados[i][1]));
+  }
+
+  if (dadosConsumo) {
+    total = valorConsumo;
+  } else {
+    total = valorDesconsumo;
+  }
+
+  dados.forEach((dado) => {
+    list_dados =
+      list_dados +
+      `
+    <div class="categorias">
+                          <p>
+                              ${dado[0]}
+                          </p>    
+                          <p>
+                              ${((dado[1] * 100) / total).toFixed(2)}%
+                          </p>
+                          <p>
+                              R$ ${dado[1]}
+                          </p>
+                      </div>`;
   });
 
   div_cadastros.innerHTML = list_cadastros;
 
+  dadosCategorias.innerHTML = list_dados;
+
   divVaDesconsumo.innerHTML = `<p> ${valorDesconsumo} </p>`;
   divVaConsumo.innerHTML = `<p> ${valorConsumo} </p>`;
   divVaRestante.innerHTML = `<p> ${valorRestante} </p>`;
+
+  const dadosGrafico1 = {
+    datasets: [
+      {
+        data: valoresDados,
+        // backgroundColor: [
+        //   "rgb(255, 99, 132)",
+        //   "rgb(54, 162, 235)",
+        //   "rgb(255, 205, 86)",
+        // ],
+        // hoverOffset: 4,
+      },
+    ],
+  };
+
+  const configGarfico1 = {
+    type: "pie",
+    data: dadosGrafico1,
+  };
+
+  const dadosGrafico2 = {
+    labels: dias,
+    datasets: [
+      {
+        label: ["Valor"],
+        data: valorPorDia,
+        fill: true,
+        borderColor: "rgb(75, 192, 192)",
+        tension: 0.1,
+      },
+    ],
+  };
+
+  const configGarfico2 = {
+    type: "line",
+    data: dadosGrafico2,
+  };
+
+  if (grafico1) {
+    updateDataGrafico(grafico1, 1, valoresDados);
+  } else {
+    grafico1 = new Chart(canvasGrafico1, configGarfico1);
+  }
+
+  if (grafico2) {
+    updateDataGrafico(grafico2, 2, valorPorDia, dias);
+  } else {
+    grafico2 = new Chart(canvasGrafico2, configGarfico2);
+  }
 
   valorDesconsumo = 0;
   valorConsumo = 0;
@@ -293,5 +414,29 @@ function atualizarDados(tipo) {
     dadosConsumo = false;
   }
 
-  mostrar()
+  mostrar();
+}
+
+function updateDataGrafico(chart, tipo, dados, label) {
+  while (chart.data.datasets[0].data.length != 0) {
+    chart.data.datasets[0].data.pop();
+  }
+
+  for (let i = 0; i < dados.length; i++) {
+    chart.data.datasets[0].data.push(dados[i]);
+  }
+
+  if (tipo == 2) {
+    console.log(chart.data);
+
+    while (chart.data.labels.length != 0) {
+      chart.data.labels.pop();
+    }
+
+    for (let i = 0; i < label.length; i++) {
+      chart.data.labels.push(label[i]);
+    }
+  }
+
+  chart.update();
 }
